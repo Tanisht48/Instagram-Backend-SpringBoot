@@ -21,9 +21,9 @@
       POST/SignUp
       POST/SignIn
       GET/post/type
+      PUT/update
+      PUT/update/LogIn
 
  
-  
-
 ## Project Summary
   In this application we can achieve all the basic functionalities of Instagram through Backend
