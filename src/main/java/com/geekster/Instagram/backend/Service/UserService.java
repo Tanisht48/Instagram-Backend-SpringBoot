@@ -3,6 +3,8 @@ package com.geekster.Instagram.backend.Service;
 import com.geekster.Instagram.backend.Model.AuthenticationToken;
 import com.geekster.Instagram.backend.Model.Dto.SignInInput;
 import com.geekster.Instagram.backend.Model.Dto.SignUpOutput;
+import com.geekster.Instagram.backend.Model.Dto.UpdateBasicDetails;
+import com.geekster.Instagram.backend.Model.Dto.UpdateLogInDetails;
 import com.geekster.Instagram.backend.Model.Post;
 import com.geekster.Instagram.backend.Model.PostType;
 import com.geekster.Instagram.backend.Model.User;
@@ -129,5 +131,72 @@ public class UserService {
         User user = userRepo.findFirstByUserEmail(userEmail);
         Integer userId = user.getUserId();
         return  postService.findByPostTypeAndUser(postType,user);
+    }
+
+    public String updateDetails(String userEmail, UpdateBasicDetails user) {
+        User currentUser = userRepo.findFirstByUserEmail(userEmail);
+        boolean status = false;
+        if(user.getUserName()!=null)
+        {
+            currentUser.setUserName(user.getUserName());
+            status = true;
+        }
+        if(user.getUserHandle()!=null)
+       {
+           currentUser.setUserHandle(user.getUserHandle());
+           status = true;
+       }
+       if(user.getUserAge()!=null)
+       {
+           currentUser.setUserAge((user.getUserAge()));
+           status= true;
+       }
+        if(status)
+        {
+            userRepo.save(currentUser);
+            return "Details updated";
+        }
+        else
+        {
+            return "Please Enter Details Correctly";
+        }
+
+
+
+
+    }
+
+    public String updateLogInDetails(String userEmail, UpdateLogInDetails details,String userToken) {
+        User currentUser = userRepo.findFirstByUserEmail(userEmail);
+        boolean status = false;
+        if(details.getUserEmail()!=null)
+        {
+            authenticationService.deleteAuthToken(userToken);
+            currentUser.setUserEmail(details.getUserEmail());
+            AuthenticationToken authToken  = new AuthenticationToken(currentUser);
+            authenticationService.saveAuthToken(authToken);
+            status = true;
+        }
+        if(details.getUserPassword()!=null)
+        {
+            try {
+                String newPass = PasswordEncrypter.encryptPassword(details.getUserPassword());
+                currentUser.setUserPassword(newPass);
+            }
+            catch (Exception e)
+            {
+                return  "Internal error occurred";
+            }
+        }
+      if(status)
+      {
+          userRepo.save(currentUser);
+          return "Details updated";
+      }
+      else
+      {
+       return "Please Enter Details Correctly";
+      }
+
     }
 }

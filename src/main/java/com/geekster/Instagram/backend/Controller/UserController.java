@@ -2,6 +2,8 @@ package com.geekster.Instagram.backend.Controller;
 
 import com.geekster.Instagram.backend.Model.Dto.SignInInput;
 import com.geekster.Instagram.backend.Model.Dto.SignUpOutput;
+import com.geekster.Instagram.backend.Model.Dto.UpdateBasicDetails;
+import com.geekster.Instagram.backend.Model.Dto.UpdateLogInDetails;
 import com.geekster.Instagram.backend.Model.Post;
 import com.geekster.Instagram.backend.Model.PostType;
 import com.geekster.Instagram.backend.Model.User;
@@ -60,6 +62,31 @@ public class UserController {
        throw new IllegalStateException("Not a Authenticated user");
     }
 
+    @PutMapping("update")
+    public String updateDetails(@RequestParam String userEmail, @RequestParam String userToken, @RequestBody UpdateBasicDetails details)
+    {
+        boolean checkSignInUser = authenticationService.checkSignInUser(userEmail,userToken);
+        if(checkSignInUser)
+        {
 
+            return userService.updateDetails(userEmail,details);
+        }
+        else{
+            return "You are not a Authenticated User";
+        }
+    }
+    @PutMapping("update/LogIn")
+    public String updateLog(@RequestParam String userEmail, @RequestParam String userToken, @RequestBody UpdateLogInDetails details)
+    {
+        boolean checkSignInUser = authenticationService.checkSignInUser(userEmail,userToken);
+        if(checkSignInUser)
+        {
+
+            return userService.updateLogInDetails(userEmail,details,userToken);
+        }
+        else{
+            return "You are not a Authenticated User";
+        }
+    }
 
 }

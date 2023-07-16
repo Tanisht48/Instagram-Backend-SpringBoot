@@ -25,4 +25,10 @@ public class AuthenticationService {
 
         return tokenConnectedEmail.equals(userEmail);
     }
+
+    public void deleteAuthToken(String userToken) {
+        AuthenticationToken authToken = authenticationRepo.findFirstByTokenValue(userToken);
+
+        authenticationRepo.delete(authToken);
+    }
 }
